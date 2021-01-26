@@ -6,10 +6,10 @@ Flight Sim Planner server.
 - [Development](#development)
 
 # Overview
-DenoJs Typescript HTTP REST API.
+Golang HTTP REST API.
 
 # Development
-DenoJs and Typescript are used.
+Go is used.
 
 To start the server run:
 

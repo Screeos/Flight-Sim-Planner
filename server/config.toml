@@ -1,6 +1,0 @@
-[http]
-port = 8000
-
-[db]
-uri = "mongodb://127.0.0.1:27017"
-dbName = "dev-flight-sim-planner"

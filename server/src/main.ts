@@ -10,6 +10,8 @@ import {
     validate,
     firstMessages,
     required,
+    nullable,
+    either,
     isNumber,
     isString,
     validateObject,
@@ -88,6 +90,28 @@ interface SecretPlan extends PublicPlan {
 }
 
 /**
+ * Type of navigation aid.
+ */
+enum NavaidType {
+    Airport,
+    Waypoint,
+    VOR,
+    NDB,
+}
+
+/**
+ * Records metadata about a location on earth which has some assigned meaning. This can
+ * be an airport, waypoint, VOR, or NDB.
+ */
+const NavaidSchema = either()
+// TODO: In the middle of moving airportICAO from Location to a Navaid type.
+
+/**
+ * If an airport, its ICAO, null if not an airport or unknown.
+ */
+//airportICAO: string | null,
+
+/**
  * Records a location. 
  */
 interface Location {
@@ -112,9 +136,10 @@ interface Location {
     heading: number,
 
     /**
-	* If an airport, its ICAO, null if not an airport or unknown.
+	* If this location is associated with a form of navigation aid or airport it will
+	* be recorded here. Null if it is not.
 	*/
-    airportICAO: string | null,
+    navaid: Navaid | null,
 }
 
 /**
@@ -125,7 +150,7 @@ const LocationSchema = {
     longitude: [ required, isNumber ],
     altitudeMeters: [ required, isNumber ],
     heading: [ required, isNumber ],
-    airportICAO: [ isNumber ],
+    navaid: [ required, nullable, validateObject(true, NavaidSchema) ],
 };
 
 /**

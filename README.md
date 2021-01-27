@@ -7,4 +7,7 @@ Flight simulator planning.
 # Overview
 A web application to aid in planning flights in flight simulator.
 
-See the [`server/`](./server/README.md) directory for more information.
+See the directories:
+
+- [`server/`](./server/README.md)
+- [`frontend/`](./frontend/README.md)

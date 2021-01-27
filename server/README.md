@@ -11,7 +11,14 @@ Golang HTTP REST API.
 # Development
 Go is used.
 
-To start the server run:
+Make sure the Docker Compose file in the root directory
+is running:
+
+```
+docker-compose up -d
+```
+
+Then in this directory start the server:
 
 ```
 make run

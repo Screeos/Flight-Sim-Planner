@@ -15,13 +15,17 @@ import Home from "./Home.jsx";
 import NotFound from "./NotFound.jsx";
 import CreateFlightPlan from "./CreateFlightPlan.jsx";
 
+const AppContainer = styled.div`
+font-size: 1.3rem;
+`;
+
 const StyledNavItem = styled(Nav.Item)`
 font-size: 1.5rem;
 `;
 
 const App = () => {
   return (
-	  <>
+	  <AppContainer>
 		  <Router>
 			  <Navbar bg="dark" variant="dark" expand="lg">
 				  <Navbar.Brand>
@@ -55,7 +59,7 @@ const App = () => {
           </Route>
         </Switch>
       </Router>
-	  </>
+	  </AppContainer>
   );
 };
 

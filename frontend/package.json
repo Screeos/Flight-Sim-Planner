@@ -2,11 +2,11 @@
   "name": "frontend",
   "version": "0.1.0",
   "description": "Flight simulator planning.",
-  "main": "index.js",
+  "main": "src/index.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "parcel build src/index.html",
-    "start": "parcel serve src/index.html"
+    "start": "nodemon --watch src/ --exec 'parcel serve src/index.html'"
   },
   "repository": {
     "type": "git",

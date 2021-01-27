@@ -1,0 +1,12 @@
+version: "3.7"
+services:
+  mongo:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: dev-tortoise
+      MONGO_INITDB_ROOT_PASSWORD: dev-tortoise
+      MONGO_INITDB_DATABASE: Dev-Tortoise
+    ports:
+      - "27017:27017"
+    volumes:
+      - "./container-data/mongo:/data/db"

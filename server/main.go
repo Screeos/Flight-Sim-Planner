@@ -30,6 +30,7 @@ func (a HTTPAPI) Start() error {
 
 	// Routes
 	router.GET("/api/v0/health", a.EPTHealth)
+	// TODO: Make create flight plan endpoint
 
 	return router.Run(a.Config.HTTPHost)
 }

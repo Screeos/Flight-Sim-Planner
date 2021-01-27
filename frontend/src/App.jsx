@@ -1,4 +1,6 @@
-import React from "react";
+import React, {
+  useContext
+} from "react";
 import styled from "styled-components";
 import {
   BrowserRouter as Router,
@@ -10,6 +12,7 @@ import {
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 
+import APIClient from "./apiClient";
 import COLORS from "./colors";
 import Home from "./Home.jsx";
 import NotFound from "./NotFound.jsx";
@@ -23,44 +26,49 @@ const StyledNavItem = styled(Nav.Item)`
 font-size: 1.5rem;
 `;
 
+const APIClientCtx = React.createContext(new APIClient());
+
 const App = () => {
   return (
-	  <AppContainer>
-		  <Router>
-			  <Navbar bg="dark" variant="dark" expand="lg">
-				  <Navbar.Brand>
-				    🐢 Tortoise Flight Ops
-				  </Navbar.Brand>
+    <APIClientCtx.Provider>
+	    <AppContainer>
+		    <Router>
+			    <Navbar bg="dark" variant="dark" expand="lg">
+				    <Navbar.Brand>
+				      🐢 Tortoise Flight Ops
+				    </Navbar.Brand>
 
-				  <Navbar.Toggle
-				  aria-controls="basic-navbar-nav"
-				  />
+				    <Navbar.Toggle
+				      aria-controls="basic-navbar-nav"
+				    />
 
-				  <Navbar.Collapse id="basic-navbar-nav">
-				    <Nav className="mr-auto">
-					    <StyledNavItem>
-						    <Link to="/">Home</Link>
-					    </StyledNavItem>
-				    </Nav>
-				  </Navbar.Collapse>
-			  </Navbar>
+				    <Navbar.Collapse id="basic-navbar-nav">
+				      <Nav className="mr-auto">
+					      <StyledNavItem>
+						      <Link to="/">Home</Link>
+					      </StyledNavItem>
+				      </Nav>
+				    </Navbar.Collapse>
+			    </Navbar>
 
-        <Switch>
-          <Route exact path="/">
-            <Home />
-          </Route>
+          <Switch>
+            <Route exact path="/">
+              <Home />
+            </Route>
 
-          <Route path="/create-flight-plan">
-            <CreateFlightPlan />
-          </Route>
+            <Route path="/create-flight-plan">
+              <CreateFlightPlan />
+            </Route>
 
-          <Route>
-            <NotFound />
-          </Route>
-        </Switch>
-      </Router>
-	  </AppContainer>
+            <Route>
+              <NotFound />
+            </Route>
+          </Switch>
+        </Router>
+	    </AppContainer>
+    </APIClientCtx.Provider>
   );
 };
 
 export default App;
+export { APIClientCtx };

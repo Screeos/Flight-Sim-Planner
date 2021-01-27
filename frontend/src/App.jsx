@@ -26,11 +26,11 @@ const StyledNavItem = styled(Nav.Item)`
 font-size: 1.5rem;
 `;
 
-const APIClientCtx = React.createContext(new APIClient());
+const APIClientCtx = React.createContext(null);
 
 const App = () => {
   return (
-    <APIClientCtx.Provider>
+    <APIClientCtx.Provider value={new APIClient()}>
 	    <AppContainer>
 		    <Router>
 			    <Navbar bg="dark" variant="dark" expand="lg">

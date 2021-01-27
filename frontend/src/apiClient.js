@@ -2,13 +2,22 @@
  * Flight planning API client.
  * 
  * FlightPlan object:
- *   - fromAirport (string)
- *   - toAirport (string)
- *   - route (string)
+ *   - FromAirport (string)
+ *   - ToAirport (string)
+ *   - Route (string)
  */
 class APIClient {
   constructor() {
-    this.baseURL = new URL("http://localhost:8000/api/v0");
+    this.baseURL = new URL("http://localhost:8000/api/v0/");
+  }
+
+  /**
+   * Take a path and add it onto the base URL.
+   * @param path {string} To append.
+   * @returns {string} Base URL with appended path.
+   */
+  urlPath(path) {
+    return new URL(path, this.baseURL).toString();
   }
 
   /**
@@ -18,6 +27,18 @@ class APIClient {
    *   flight plan or rejects with an error.
    */
   async createFlightPlan(flightPlan) {
-    // TODO: Make HTTP request to create flight plan endpoint
+    const resp = await fetch(
+      this.urlPath("flight_plan"), {
+        method: "POST",
+        body: JSON.stringify({
+          FlightPlan: flightPlan,
+        }),
+      });
+
+    const respBody = await resp.json();
+    
+    return respBody.FlightPlan;
   }
 }
+
+export default APIClient;

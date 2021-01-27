@@ -35,10 +35,11 @@ const CreateFlightPlan = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    apiClient.createFlightPlan({
-      fromAirport: fromAirport,
-      toAirport: toAirport,
-      route: route,
+
+    const created = await apiClient.createFlightPlan({
+      FromAirport: fromAirport,
+      ToAirport: toAirport,
+      Route: route,
     });
   };
   

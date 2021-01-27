@@ -1,6 +1,6 @@
 .PHONY: run
 
-MAIN_FILE := src/main.ts
+MAIN_FILE := main.go
 
 run:
-	deno run --unstable --allow-read --allow-write --allow-plugin --allow-net --allow-env ${MAIN_FILE}
+	go run main.go

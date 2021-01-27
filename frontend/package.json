@@ -1,21 +1,34 @@
 {
   "name": "frontend",
   "version": "0.1.0",
-  "description": "",
-  "main": "src/main.ts",
-  "dependencies": {},
-  "devDependencies": {
-    "@rollup/plugin-html": "^0.2.0",
-    "rollup": "^2.32.1",
-    "rollup-plugin-typescript": "^1.0.1",
-    "tslib": "^2.0.3",
-    "typescript": "^4.0.5"
-  },
+  "description": "Flight simulator planning.",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rollup -c",
-    "watch": "rollup -c -w"
+    "build": "parcel build src/index.html",
+    "start": "parcel serve src/index.html"
   },
-  "author": "",
-  "license": "MIT"
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Screeos/Tortoise-Flight-Ops.git"
+  },
+  "author": "Screeos",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Screeos/Tortoise-Flight-Ops/issues"
+  },
+  "homepage": "https://github.com/Screeos/Tortoise-Flight-Ops#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.7",
+    "parcel": "^1.12.4",
+    "sass": "^1.32.5"
+  },
+  "dependencies": {
+    "bootstrap": "^4.6.0",
+    "react": "^17.0.1",
+    "react-bootstrap": "^1.4.3",
+    "react-dom": "^17.0.1",
+    "react-router-dom": "^5.2.0",
+    "styled-components": "^5.2.1"
+  }
 }

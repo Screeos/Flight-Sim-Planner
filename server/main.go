@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"net/http"
 	"os"
 	"time"
 
@@ -10,10 +11,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	// "go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	MOptions "go.mongodb.org/mongo-driver/mongo/options"
-	// "go.mongodb.org/mongo-driver/mongo/readpref"
+	moptions "go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // CheckErr asserts that err is nil. If not logs with
@@ -29,13 +29,19 @@ type Config struct {
 	// HTTP API port
 	HTTPHost string `default:":8000"`
 
-	// MongoURI contains the connection and
-	// database details
-	MongoURI string `default:"mongodb://127.0.0.1:27017/Dev-Tortoise"`
+	// MongoURI contains the connection details
+	MongoURI string `default:"mongodb://dev-tortoise:dev-tortoise@127.0.0.1:27017/"`
+
+	// DBName is the name of mongodb database to
+	// store data
+	DBName string `default:"Dev-Tortoise"`
 }
 
 // FlightPlan describes the details of a simulator flight
 type FlightPlan struct {
+	// ID unique identifier
+	ID string
+
 	// FromAirport ICAO
 	FromAirport string
 
@@ -46,6 +52,18 @@ type FlightPlan struct {
 	Route string
 }
 
+// DBCtx stores relevant database connections
+type DBCtx struct {
+	// Client is the mongodb client
+	Client *mongo.Client
+
+	// DB is a handle for the selected mongodb database
+	DB *mongo.Database
+
+	// FlightPlans collection
+	FlightPlans *mongo.Collection
+}
+
 // HTTPAPI implements the API
 type HTTPAPI struct {
 	// Ctx is the background context
@@ -54,8 +72,37 @@ type HTTPAPI struct {
 	// Config for server
 	Config Config
 
-	// DBClient is the mongodb client
-	DBClient *mongo.Client
+	// DB is the mongodb context
+	DB DBCtx
+}
+
+// ErrorResp includes details of an error
+type ErrorResp struct {
+	// Message describing what is happening
+	Message string
+}
+
+// RespondErr sends an error response if err is not nil.
+// The response will be a ErrorResp and code 500. The
+// err will be logged.
+// Returns true when a response was sent and endpoint
+// execution should stop. False when no response is sent
+// and everything should continue
+func (a HTTPAPI) RespondErr(c *gin.Context, msg string, err error) bool {
+	if err != nil {
+		c.JSON(http.StatusInternalServerError,
+			ErrorResp{
+				Message: msg,
+			})
+		log.Error().
+			Err(err).
+			Str("method", c.Request.Method).
+			Str("path", c.Request.URL.Path).
+			Msg(msg)
+		return true
+	}
+
+	return false
 }
 
 // Start the API via a Gin server
@@ -81,7 +128,9 @@ func (a HTTPAPI) Start() error {
 // MWLog logs every request
 func (a HTTPAPI) MWLog(c *gin.Context) {
 	log.Debug().
-		Msgf("%s %s", c.Request.Method, c.Request.URL.Path)
+		Str("method", c.Request.Method).
+		Str("path", c.Request.URL.Path).
+		Msg("http request")
 }
 
 // EPTHealthResp health check response.
@@ -104,8 +153,8 @@ type EPTCreateFlightPlanReq struct {
 	FlightPlan FlightPlan
 }
 
-// EPTCreateFlightPlanRes
-type EPTCreateFlightPlanRes struct {
+// EPTCreateFlightPlanResp
+type EPTCreateFlightPlanResp struct {
 	// FlightPlan which was created
 	FlightPlan FlightPlan
 }
@@ -116,13 +165,21 @@ func (a HTTPAPI) EPTCreateFlightPlan(c *gin.Context) {
 	var req EPTCreateFlightPlanReq
 	c.BindJSON(&req)
 
-	// TODO: Save in mongodb
+	// Save mongodb
+	insertRes, err := a.DB.FlightPlans.InsertOne(
+		a.Ctx, req.FlightPlan)
+	sent := a.RespondErr(c,
+		"failed to save in database", err)
+	if sent {
+		return
+	}
 
-	log.Debug().
-		Msgf("Flight plan to create=%#v", req)
+	// Respond with inserted
+	insertedFP := req.FlightPlan
+	insertedFP.ID = insertRes.InsertedID.(primitive.ObjectID).Hex()
 
-	c.JSON(200, EPTCreateFlightPlanRes{
-		FlightPlan: req.FlightPlan,
+	c.JSON(200, EPTCreateFlightPlanResp{
+		FlightPlan: insertedFP,
 	})
 }
 
@@ -140,7 +197,7 @@ func main() {
 	CheckErr("failed to load config", err)
 
 	// Connect to mongodb
-	dbClient, err := mongo.NewClient(MOptions.Client().
+	dbClient, err := mongo.NewClient(moptions.Client().
 		ApplyURI(cfg.MongoURI))
 	CheckErr("failed to create mongodb client", err)
 
@@ -151,11 +208,18 @@ func main() {
 
 	defer dbClient.Disconnect(ctx)
 
+	db := dbClient.Database(cfg.DBName)
+	dbFlightPlans := db.Collection("FlightPlans")
+
 	// Start server
 	api := HTTPAPI{
-		Ctx:      ctx,
-		Config:   cfg,
-		DBClient: dbClient,
+		Ctx:    ctx,
+		Config: cfg,
+		DB: DBCtx{
+			Client:      dbClient,
+			DB:          db,
+			FlightPlans: dbFlightPlans,
+		},
 	}
 	err = api.Start()
 	CheckErr("failed to run API server", err)

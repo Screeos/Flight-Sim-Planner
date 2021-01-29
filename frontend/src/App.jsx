@@ -1,5 +1,7 @@
 import React, {
-  useContext
+  useContext,
+  useState,
+  useEffect,
 } from "react";
 import styled from "styled-components";
 import {
@@ -11,64 +13,161 @@ import {
 } from "react-router-dom";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
+import Button from "react-bootstrap/Button";
+
+import { library as FALib } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
+FALib.add(faTimes);
 
 import APIClient from "./apiClient";
 import COLORS from "./colors";
-import Home from "./Home.jsx";
-import NotFound from "./NotFound.jsx";
-import CreateFlightPlan from "./CreateFlightPlan.jsx";
+import HomePage from "./HomePage.jsx";
+import NotFoundPage from "./NotFoundPage.jsx";
+import CreateFlightPlanPage from "./CreateFlightPlanPage.jsx";
+import GetFlightPlanPage from "./GetFlightPlanPage.jsx";
 
 const AppContainer = styled.div`
-font-size: 1.3rem;
+  font-size: 1.3rem;
 `;
 
 const StyledNavItem = styled(Nav.Item)`
 font-size: 1.5rem;
 `;
 
+const ErrContainer = styled.div`
+width: 100%;
+padding-top: 0.5rem;
+padding-bottom: 0.5rem;
+padding-left: 1rem;
+padding-right: 1rem;
+display: flex;
+background: ${COLORS.red};
+color: white;
+position: relative;
+z-index: 2;
+`;
+
+const ErrTxtContainer = styled.div`
+display: flex;
+flex: 1;
+justify-content: start;
+`;
+
+const ErrButtonContainer = styled.div`
+display: flex;
+flex: 0;
+justify-content: end;
+`;
+
+const ErrButton = styled.button`
+color: white;
+background: none;
+border: none;
+transition: none;
+
+&:hover, &:active {
+  background: none;
+  border: none;
+}
+`;
+
+const Err = ({ error, doRemoveSelf }) => {
+  return (
+    <ErrContainer>
+      <ErrTxtContainer>
+        <div>Error: {error}</div>
+      </ErrTxtContainer>
+      <ErrButtonContainer>
+        <ErrButton onClick={doRemoveSelf}>
+          <FontAwesomeIcon icon="times" />
+        </ErrButton>
+      </ErrButtonContainer>
+    </ErrContainer>
+  );
+};
+
 const APIClientCtx = React.createContext(null);
+const ShowErrCtx = React.createContext(null);
 
 const App = () => {
+  const [err, setErr] = useState([]);
+  
+  const apiClient = new APIClient();
+  const showErr = (showThis) => {
+    setErr(err => [...err, showThis]);
+  };
+  const removeErr = (i) => {
+    setErr(err => {
+      let newErr = [...err];
+      newErr.splice(i, 1)
+      return newErr;
+    });
+  };
+  
   return (
-    <APIClientCtx.Provider value={new APIClient()}>
-	    <AppContainer>
-		    <Router>
-			    <Navbar bg="dark" variant="dark" expand="lg">
-				    <Navbar.Brand>
-				      🐢 Tortoise Flight Ops
-				    </Navbar.Brand>
+    <APIClientCtx.Provider value={apiClient}>
+      <ShowErrCtx.Provider value={showErr}>
+	      <AppContainer>
+		      <Router>
+			      <Navbar bg="dark" variant="dark" expand="lg">
+				      <Navbar.Brand>
+				        🐢 Tortoise Flight Ops
+				      </Navbar.Brand>
 
-				    <Navbar.Toggle
-				      aria-controls="basic-navbar-nav"
-				    />
+				      <Navbar.Toggle
+				        aria-controls="basic-navbar-nav"
+				      />
 
-				    <Navbar.Collapse id="basic-navbar-nav">
-				      <Nav className="mr-auto">
-					      <StyledNavItem>
-						      <Link to="/">Home</Link>
-					      </StyledNavItem>
-				      </Nav>
-				    </Navbar.Collapse>
-			    </Navbar>
+				      <Navbar.Collapse id="basic-navbar-nav">
+				        <Nav className="mr-auto">
+					        <StyledNavItem>
+						        <Link to="/">Home</Link>
+					        </StyledNavItem>
+				        </Nav>
+				      </Navbar.Collapse>
+			      </Navbar>
 
-          <Switch>
-            <Route exact path="/">
-              <Home />
-            </Route>
+            {err.map((e, i) => {
+              const doRemoveSelf = () => {
+                removeErr(i);
+              };
+              
+              return (
+                <Err
+                  key={i}
+                  error={e}
+                  doRemoveSelf={doRemoveSelf}
+                />
+              );
+            })}
 
-            <Route path="/create-flight-plan">
-              <CreateFlightPlan />
-            </Route>
+            <Switch>
+              <Route exact path="/">
+                <HomePage />
+              </Route>
 
-            <Route>
-              <NotFound />
-            </Route>
-          </Switch>
-        </Router>
-	    </AppContainer>
+              <Route path="/create-flight-plan">
+                <CreateFlightPlanPage />
+              </Route>
+
+              <Route path="/flight-plan/:flightPlanID">
+                <GetFlightPlanPage />
+              </Route>
+
+              <Route>
+                <NotFoundPage />
+              </Route>
+            </Switch>
+          </Router>
+	      </AppContainer>
+      </ShowErrCtx.Provider>
     </APIClientCtx.Provider>
   );
 };
 
 export default App;
-export { APIClientCtx };
+export {
+  APIClientCtx,
+  ShowErrCtx,
+};

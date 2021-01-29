@@ -6,7 +6,7 @@ import {
 } from "./styles";
 import BigLogo from "./BigLogo.jsx";
 
-const NotFound = () => {
+const NotFoundPage = () => {
   return (
     <VerticalContainer>
       <BigLogo></BigLogo>
@@ -15,4 +15,4 @@ const NotFound = () => {
   );
 };
 
-export default NotFound;
+export default NotFoundPage;

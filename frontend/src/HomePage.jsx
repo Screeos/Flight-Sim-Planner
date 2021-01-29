@@ -14,7 +14,7 @@ display: flex;
 margin-top: 2rem;
 `;
 
-const Home = () => {
+const HomePage = () => {
   return (
     <VerticalContainer>
       
@@ -32,4 +32,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default HomePage;

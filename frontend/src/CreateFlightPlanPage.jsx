@@ -4,6 +4,7 @@ import React, {
 } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import { useHistory} from "react-router-dom";
 
 import {
   VerticalContainer,
@@ -12,10 +13,16 @@ import {
   SectionTitle,
   SectionContent,
 } from "./styles";
-import { APIClientCtx } from "./App.jsx";
+import {
+  APIClientCtx,
+  ShowErrCtx,
+} from "./App.jsx";
 
-const CreateFlightPlan = () => {
+const CreateFlightPlanPage = () => {
+  const routerHistory = useHistory();
+  
   const apiClient = useContext(APIClientCtx);
+  const showErr = useContext(ShowErrCtx);
   
   const [fromAirport, setFromAirport] = useState("");
   const [toAirport, setToAirport] = useState("");
@@ -36,11 +43,19 @@ const CreateFlightPlan = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    const created = await apiClient.createFlightPlan({
-      FromAirport: fromAirport,
-      ToAirport: toAirport,
-      Route: route,
-    });
+    let created = null;
+    try {
+      created = await apiClient.createFlightPlan({
+        FromAirport: fromAirport,
+        ToAirport: toAirport,
+        Route: route,
+      });
+    } catch (e) {
+      showErr(`failed to create your new flight plan: ${e}`);
+      return;
+    }
+
+    routerHistory.push(`/flight-plan/${created.ID}`);
   };
   
   return (
@@ -100,4 +115,4 @@ const CreateFlightPlan = () => {
   );
 };
 
-export default CreateFlightPlan;
+export default CreateFlightPlanPage;

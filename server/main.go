@@ -224,9 +224,9 @@ func (a HTTPAPI) EPTGetFlightPlan(c *gin.Context) {
 	// Get requested ID
 	fpID, err := mprimitive.ObjectIDFromHex(
 		c.Param("id"))
-	if a.CheckRespondErr(c, -1,
-		"the flight plan ID you specified was not in"+
-			" the correct format", err) {
+	if a.CheckRespondErr(c, http.StatusBadRequest,
+		"the flight plan ID was not in a "+
+			"recognizable format", err) {
 		return
 	}
 

@@ -40,9 +40,6 @@ type Config struct {
 
 // FlightPlan describes the details of a simulator flight
 type FlightPlan struct {
-	// ID unique identifier
-	ID mprimitive.ObjectID `bson:"_id"`
-
 	// FromAirport ICAO
 	FromAirport string
 
@@ -51,6 +48,15 @@ type FlightPlan struct {
 
 	// Route
 	Route string
+}
+
+// DBFlightPlan includes all FlightPlan information plus
+// a database ID.
+type DBFlightPlan struct {
+	FlightPlan `bson:",inline"`
+
+	// ID unique identifier
+	ID mprimitive.ObjectID `bson:"_id"`
 }
 
 // DBCtx stores relevant database connections
@@ -100,7 +106,6 @@ func (a HTTPAPI) RespondErr(c *gin.Context, code int, msg string, err error) {
 		log.Error().
 			Err(err).
 			Int("http error code", code).
-			Bool("foo", code >= 500).
 			Str("method", c.Request.Method).
 			Str("path", c.Request.URL.Path).
 			Msg(msg)
@@ -178,7 +183,7 @@ type EPTCreateFlightPlanReq struct {
 // EPTCreateFlightPlanResp
 type EPTCreateFlightPlanResp struct {
 	// FlightPlan which was created
-	FlightPlan FlightPlan
+	FlightPlan DBFlightPlan
 }
 
 // EPTCreateFlightPlan creates a flight plan
@@ -197,8 +202,10 @@ func (a HTTPAPI) EPTCreateFlightPlan(c *gin.Context) {
 	}
 
 	// Respond with inserted
-	insertedFP := req.FlightPlan
-	insertedFP.ID = insertRes.InsertedID.(mprimitive.ObjectID)
+	insertedFP := DBFlightPlan{
+		FlightPlan: req.FlightPlan,
+		ID:         insertRes.InsertedID.(mprimitive.ObjectID),
+	}
 
 	c.JSON(http.StatusOK, EPTCreateFlightPlanResp{
 		FlightPlan: insertedFP,
@@ -208,7 +215,7 @@ func (a HTTPAPI) EPTCreateFlightPlan(c *gin.Context) {
 // EPTGetFlightPlanResp provides a requested flight plan
 type EPTGetFlightPlanResp struct {
 	// FlightPlan which was requested
-	FlightPlan FlightPlan
+	FlightPlan DBFlightPlan
 }
 
 // EPTGetFlightPlan retrieves a flight plan who's ID is
@@ -240,7 +247,7 @@ func (a HTTPAPI) EPTGetFlightPlan(c *gin.Context) {
 		return
 	}
 
-	var foundFP FlightPlan
+	var foundFP DBFlightPlan
 	if a.CheckRespondErr(c, -1,
 		"a flight plan was found but we ran into "+
 			"trouble processing the results",

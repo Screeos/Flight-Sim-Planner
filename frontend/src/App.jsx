@@ -91,8 +91,18 @@ font-weight: bold;
 `;
 
 const BrandTurtle = styled.div`
+height: 1rem;
+line-height: 1rem;
 display: flex;
+font-size: 2rem;
 text-decoration: underline;
+text-decoration-thickness: 0.3rem;
+color: ${COLORS.primary};
+position: relative;
+`;
+
+const BrandTitle = styled.div`
+margin-left: 0.5rem;
 `;
 
 const HeaderLink = styled(Link)`
@@ -149,7 +159,9 @@ const App = () => {
                   <BrandTurtle>
                     🐢
                   </BrandTurtle>
-                  Tortoise Flight Ops
+                  <BrandTitle>
+                    Tortoise Flight Ops
+                  </BrandTitle>
                 </BrandLink>
 				      </Navbar.Brand>
 

@@ -51,6 +51,45 @@ font-size: 2rem;
 color: ${COLORS.primary};
 `;
 
+const AirportsContainer = styled.div`
+width: 100%;
+display: flex;
+justify-content: space-evenly;
+`;
+
+const OneAirportContainer = styled.div`
+width: 100%;
+display: flex;
+flex-direction: column;
+flex: 1;
+`;
+
+const AirportICAO = styled.div`
+`;
+
+const AirportICAOLabel = styled.div`
+font-weight: bold;
+`;
+
+const RouteContainer = styled.div`
+display: flex;
+flex-direction: column;
+margin-top: 2rem;
+`;
+
+const RouteLabel = styled.div`
+display: flex;
+font-weight: bold;
+flex: 0;
+`;
+
+const RouteValue = styled.div`
+display: flex;
+flex: 1;
+padding-top: 1rem;
+padding-left: 2rem;
+`;
+
 const GetFlightPlanPage = () => {
   const { flightPlanID } = useParams();
   const apiClient = useContext(APIClientCtx);
@@ -98,17 +137,33 @@ const GetFlightPlanPage = () => {
           </SectionTitle>
 
           <SectionContent>
-            <div>
-              <div>{flightPlan.FromAirport}</div>
-              <div>Origin Airport</div>
-              
-              <div>{flightPlan.ToAirport}</div>
-              <div>Destination Airport</div>
-            </div>
-            <div>
-              <div>Route</div>
-              <div>{flightPlan.Route}</div>
-            </div>
+            <AirportsContainer>
+              <OneAirportContainer>
+                <AirportICAO>
+                  {flightPlan.FromAirport}
+                </AirportICAO>
+                <AirportICAOLabel>
+                  Origin Airport
+                </AirportICAOLabel>
+              </OneAirportContainer>
+
+              <OneAirportContainer>
+                <AirportICAO>
+                  {flightPlan.ToAirport}
+                </AirportICAO>
+                <AirportICAOLabel>
+                  Destination Airport
+                </AirportICAOLabel>
+              </OneAirportContainer>
+            </AirportsContainer>
+            <RouteContainer>
+              <RouteLabel>
+                Route
+              </RouteLabel>
+              <RouteValue>
+                {flightPlan.Route}
+              </RouteValue>
+            </RouteContainer>
           </SectionContent>
         </Section>
       )}

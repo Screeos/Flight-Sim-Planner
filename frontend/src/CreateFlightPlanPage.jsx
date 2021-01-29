@@ -51,7 +51,7 @@ const CreateFlightPlanPage = () => {
         Route: route,
       });
     } catch (e) {
-      showErr(`failed to create your new flight plan: ${e}`);
+      showErr(`failed to create your new flight plan because ${e}`);
       return;
     }
 
@@ -106,7 +106,7 @@ const CreateFlightPlanPage = () => {
             </Form.Group>
 
             <Button type="submit">
-              Create Flight Plan
+              Share Flight Plan
             </Button>
           </Form>
         </SectionContent>

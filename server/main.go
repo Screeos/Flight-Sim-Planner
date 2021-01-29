@@ -225,8 +225,8 @@ func (a HTTPAPI) EPTGetFlightPlan(c *gin.Context) {
 	fpID, err := mprimitive.ObjectIDFromHex(
 		c.Param("id"))
 	if a.CheckRespondErr(c, -1,
-		"we failed to read the flight plan ID "+
-			"you specified", err) {
+		"the flight plan ID you specified was not in"+
+			" the correct format", err) {
 		return
 	}
 

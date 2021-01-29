@@ -82,12 +82,11 @@ const BrandLink = styled(Link)`
 display: flex;
 color: ${COLORS.light};
 transition: font-weight 1s;
+font-weight: bold;
 
 &:hover {
   color: ${COLORS.light};
   text-decoration: none;
-  font-weight: bold;
-  transition: font-weight 1s;
 }
 `;
 

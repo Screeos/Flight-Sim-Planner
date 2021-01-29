@@ -20,6 +20,7 @@ justify-content: space-around;
 const Headline = styled.div`
 font-size: 2rem;
 color: ${COLORS.primary};
+font-weight: bold;
 `;
 
 const Section = styled.div`

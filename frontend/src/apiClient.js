@@ -69,8 +69,20 @@ class APIClient {
 
       return resp;
     } catch (e) {
-      console.error(`Failed to wrap fetch for API request (path argument=${path}`, e);
-      throw "we had trouble contacting our server"
+      // We wrap the entire function body in a try catch
+      // just so any syntax errors or other gnarly
+      // stuff is never seen by the user. But this means
+      // any throws in the body which are user friendly
+      // will be caught here again and the user will
+      // never see it. So we assume that if e is a
+      // string it is a user friendly error.
+      if (typeof(e) === "string") {
+        throw e;
+      } else {
+        // Bad gnarly error, hide from user
+        console.error(`Failed to wrap fetch for API request (path argument=${path})`, e);
+        throw "we had trouble contacting our server"
+      }
     }
   }
 

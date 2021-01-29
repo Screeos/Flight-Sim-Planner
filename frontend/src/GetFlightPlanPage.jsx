@@ -33,6 +33,8 @@ const GetFlightPlanPage = () => {
     setIsLoading(false);
   }, [flightPlanID]);
 
+  // TODO: Show loading bar when retrieving flight plan
+  // TODO: Display flight plan details
   return (
     <>
       JSON flight plan (id: {flightPlanID}):

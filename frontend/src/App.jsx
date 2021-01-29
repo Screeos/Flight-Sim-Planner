@@ -26,13 +26,19 @@ import HomePage from "./HomePage.jsx";
 import NotFoundPage from "./NotFoundPage.jsx";
 import CreateFlightPlanPage from "./CreateFlightPlanPage.jsx";
 import GetFlightPlanPage from "./GetFlightPlanPage.jsx";
+import SearchFlightPlansPage from "./SearchFlightPlansPage.jsx";
 
 const AppContainer = styled.div`
-  font-size: 1.3rem;
+font-size: 1.3rem;
 `;
 
-const StyledNavItem = styled(Nav.Item)`
-font-size: 1.5rem;
+const HeaderNav = styled(Nav)`
+margin-right: 0 !important;
+`;
+
+const StyledNavbarText = styled(Navbar.Text)`
+padding-right: 0.5rem;
+padding-left: 0.5rem;
 `;
 
 const ErrContainer = styled.div`
@@ -69,6 +75,30 @@ transition: none;
 &:hover, &:active {
   background: none;
   border: none;
+}
+`;
+
+const BrandLink = styled(Link)`
+display: flex;
+color: ${COLORS.light};
+transition: font-weight 1s;
+
+&:hover {
+  color: ${COLORS.light};
+  text-decoration: none;
+  font-weight: bold;
+  transition: font-weight 1s;
+}
+`;
+
+const BrandTurtle = styled.div`
+display: flex;
+text-decoration: underline;
+`;
+
+const HeaderLink = styled(Link)`
+&:hover {
+  text-decoration: none;
 }
 `;
 
@@ -110,21 +140,47 @@ const App = () => {
       <ShowErrCtx.Provider value={showErr}>
 	      <AppContainer>
 		      <Router>
-			      <Navbar bg="dark" variant="dark" expand="lg">
+			      <Navbar
+              bg="dark"
+              variant="dark"
+              expand="md"
+            >
 				      <Navbar.Brand>
-				        🐢 Tortoise Flight Ops
+				        <BrandLink to="/" >
+                  <BrandTurtle>
+                    🐢
+                  </BrandTurtle>
+                  Tortoise Flight Ops
+                </BrandLink>
 				      </Navbar.Brand>
 
 				      <Navbar.Toggle
 				        aria-controls="basic-navbar-nav"
 				      />
 
-				      <Navbar.Collapse id="basic-navbar-nav">
-				        <Nav className="mr-auto">
-					        <StyledNavItem>
-						        <Link to="/">Home</Link>
-					        </StyledNavItem>
-				        </Nav>
+				      <Navbar.Collapse
+                id="basic-navbar-nav"
+                className="justify-content-end"
+              >
+				        <HeaderNav className="mr-auto">
+					          <StyledNavbarText>
+						          <HeaderLink to="/">
+                        Home
+                      </HeaderLink>
+					          </StyledNavbarText>
+
+                    <StyledNavbarText>
+                      <HeaderLink to="/create-flight-plan">
+                        Share
+                      </HeaderLink>
+                    </StyledNavbarText>
+
+                    <StyledNavbarText>
+                      <HeaderLink to="/flight-plan">
+                        Search
+                      </HeaderLink>
+                    </StyledNavbarText>
+				        </HeaderNav>
 				      </Navbar.Collapse>
 			      </Navbar>
 
@@ -153,6 +209,10 @@ const App = () => {
 
               <Route path="/flight-plan/:flightPlanID">
                 <GetFlightPlanPage />
+              </Route>
+
+              <Route path="/flight-plan">
+                <SearchFlightPlansPage />
               </Route>
 
               <Route>

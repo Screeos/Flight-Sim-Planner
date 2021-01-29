@@ -54,19 +54,24 @@ class APIClient {
    *   API request failed.
    */
   async _wrappedFetch(path, opts) {
-    const fullPath = this._urlPath(path);
-    
-    let resp = null;
     try {
-      resp = await fetch(fullPath, opts);
+      const fullPath = this._urlPath(path);
+      
+      let resp = null;
+      try {
+        resp = await fetch(fullPath, opts);
+      } catch (e) {
+        console.error(`Failed to make API request to ${fullPath}`, e);
+        throw "we had trouble contacting our server";
+      }
+
+      await this._checkFetchResp(resp);
+
+      return resp;
     } catch (e) {
-      console.error(`Failed to make API request to ${fullPath}`, e);
-      throw "we had trouble contacting our server";
+      console.error(`Failed to wrap fetch for API request (path argument=${path}`, e);
+      throw "we had trouble contacting our server"
     }
-
-    await this._checkFetchResp(resp);
-
-    return resp;
   }
 
   /**

@@ -40,14 +40,93 @@ type Config struct {
 
 // FlightPlan describes the details of a simulator flight
 type FlightPlan struct {
-	// FromAirport ICAO
-	FromAirport string
+	// Sectors are routes between two airports
+	Sectors []FlightSector
+}
 
-	// ToAirport ICAO
-	ToAirport string
+// FlightSector describes a route between two airports.
+// The Departure describes at which airport the route
+// starts and the route leaving the airport. The Route
+// describes flight legs until the arrival. The Arrival
+// describes the route arriving at the airport.
+type FlightSector struct {
+	// Departure details
+	Departure DepartureLeg
+
+	// Arrival details
+	Arrival ArrivalLeg
 
 	// Route
-	Route string
+	Route []FlightLeg
+}
+
+// DepartureLeg describes a route departing an airport
+type DepartureLeg struct {
+	// Airport code from which route starts
+	Airport string
+
+	// Runway from which to takeoff
+	Runway string
+
+	// SID used to depart from airport. Nil if no
+	// procedure should be used.
+	SID *SID
+}
+
+// ArrivalLeg describes a route arriving to an airport
+type ArrivalLeg struct {
+	// Airport code from which route ends
+	Airport string
+
+	// Runway on which to land
+	Runway string
+
+	// STAR used to arrive at airport. Nil if no
+	// procedure should be used.
+	STAR *STAR
+}
+
+// SID is a standard instrument departure procedure
+type SID struct {
+	// ICAO code for departure procedure
+	ICAO string
+}
+
+// STAR is a standard instrument arrival procedure
+type STAR struct {
+	ICAO string
+}
+
+// Airport describes an aerodrome
+type Airport struct {
+	// ICAO code for airport
+	ICAO string
+}
+
+// Waypoint specifies a unique name for a naviation
+// point on the earth
+type Waypoint struct {
+	// ICAO code for waypoint
+	ICAO string
+}
+
+// Airway describes a known path for navigation
+type Airway struct {
+	// ICAO code for airway
+	ICAO string
+}
+
+// FlightLeg describes one leg of a route in a sector.
+type FlightLeg struct {
+	// Origin is the navigation waypoint where the
+	// flight leg starts
+	Origin Waypoint
+
+	// Via describes what airway will be taken from
+	// the Origin waypoint to the next flight leg.
+	// If nil direct routing is used instead of
+	// an airway
+	Via *Airway
 }
 
 // DBFlightPlan includes all FlightPlan information plus

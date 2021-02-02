@@ -39,6 +39,7 @@ const SectionContent = styled.div`
 display: flex;
 flex-direction: column;
 padding-left: 1rem;
+margin-top: 2rem;
 `;
 
 export {

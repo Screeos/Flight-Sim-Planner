@@ -1,5 +1,14 @@
 import React from "react";
+import styled from "styled-components";
+
 import Form from "react-bootstrap/Form";
+
+import COLORS from "./colors";
+
+const StyledFormLabel = styled.div`
+font-size: 1.1rem;
+color: rgba(1, 1, 1, 0.8);
+`;
 
 const FormInput = ({ controlId, type, state, label, inputParams }) => {
   const [value, setValue] = state;
@@ -16,9 +25,9 @@ const FormInput = ({ controlId, type, state, label, inputParams }) => {
 
   return (
     <Form.Group controlId={controlId}>
-      <Form.Label>
+      <StyledFormLabel>
         {label}
-      </Form.Label>
+      </StyledFormLabel>
       <Form.Control
         type={type}
         {...inputParams}

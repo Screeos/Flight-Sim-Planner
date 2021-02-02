@@ -6,10 +6,10 @@ import React, {
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useHistory } from "react-router-dom";
+import styled from "styled-components";
 
 import {
   VerticalContainer,
-  FormRow,
   Section,
   SectionTitle,
   SectionContent,
@@ -21,60 +21,88 @@ import {
 import FormInput from "./FormInput.jsx";
 import { FlightSector } from "./models";
 
+const DepAppContainer = styled.div`
+display: flex;
+justify-content: space-evenly;
+`;
+
+const DepApp = styled.div`
+display: flex;
+flex-direction: column;
+`;
+
+const DepAppTitle = styled.div`
+font-size: 1.5rem;
+font-weight: bold;
+`;
+
 const EditFlightSector = ({ i, flightPlan, setSector }) => {
   const [fromAirport, setFromAirport] = useState("");
   const [fromRunway, setFromRunway] = useState("");
   
   const [toAirport, setToAirport] = useState("");
   const [toRunway, setToRunway] = useState("");
+  
   const [route, setRoute] = useState("");
 
-  // TODO: Use this custom setter function to capitalize
-  // state for the FormInput elements below.
-  const fieldState = ([value, setter]) => {
-    let newVal = value;
-    
-    // Capitalize
-    newVal = newVal.toUpperCase();
+  const wrpSet = (setter) => {
+    return (value) => {
+      let newVal = value;
+      
+      // Capitalize
+      newVal = newVal.toUpperCase();
 
-    setter(newVal);
+      setter(newVal);
+    };
   };
   
   return (
     <>
-      <FormRow>
-        <FormInput
-          controlId={`${i}-fromAirport`}
-          label="Departure Airport (ICAO Code)"
-          state={[fromAirport, setFromAirport]}
-          inputParams={{required: true}}
-        />
+      <DepAppContainer>
+        <DepApp>
+          <DepAppTitle>
+            Departure
+          </DepAppTitle>
+          
+          <FormInput
+            controlId={`${i}-fromAirport`}
+            label="Airport (ICAO)"
+            state={[fromAirport, wrpSet(setFromAirport)]}
+            inputParams={{required: true}}
+          />
 
-        <FormInput
-          controlId={`${i}-fromRunway`}
-          label="Departure Runway"
-          state={[fromRunway, setFromRunway]}
-        />
+          <FormInput
+            controlId={`${i}-fromRunway`}
+            label="Runway"
+            state={[fromRunway, wrpSet(setFromRunway)]}
+          />
+        </DepApp>
 
-        <FormInput
-          controlId={`${i}-toAriport`}
-          label="Arrival Airport (ICAO Code)"
-          state={[toAirport, setToAirport]}
-          inputParams={{required: true}}
-        />
+        <DepApp>
+          <DepAppTitle>
+            Approach
+          </DepAppTitle>
+          
+          <FormInput
+            controlId={`${i}-toAriport`}
+            label="Airport (ICAO)"
+            state={[toAirport, wrpSet(setToAirport)]}
+            inputParams={{required: true}}
+          />
 
-        <FormInput
-          controlId={`${i}-toRunway`}
-          label="Arrival Runway"
-          state={[toRunway, setToRunway]}
-        />
-      </FormRow>
+          <FormInput
+            controlId={`${i}-toRunway`}
+            label="Runway"
+            state={[toRunway, wrpSet(setToRunway)]}
+          />
+        </DepApp>
+      </DepAppContainer>
 
       <FormInput
         controlId={`${i}-route`}
         type="textarea"
         label="Route"
-        state={[route, setRoute]}
+        state={[route, wrpSet(setRoute)]}
         inputParams={{required: true}}
       />
     </>

@@ -2,10 +2,11 @@
  * Bootstrap theme colors: https://getbootstrap.com/docs/4.4/getting-started/theming/#theme-colors
  */
 $theme-colors: (
-    "primary": #2A9D8F,
-    "secondary": #E76F51,
-    "dark": #264653,
-    "light": #F8EDEB,
+  "primary": #2A9D8F,
+  "secondary": #E76F51,
+  "dark": #264653,
+  "light": #F8EDEB,
+  "red": #E76F51,
 );
 
 @import "~bootstrap/scss/bootstrap";
